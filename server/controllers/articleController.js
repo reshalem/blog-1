@@ -1,5 +1,7 @@
 const Article = require('../models/articleModel.js');
 const Comment = require('../models/commentModel.js');
+const User = require('../models/userModel.js');
+const sendEmailTo = require('../helpers/sendEmailTo.js');
 const mongoose = require('mongoose');
 
 class ArticleController {
@@ -11,12 +13,26 @@ class ArticleController {
         });
         article.save()
             .then(function(article) {
-                const response = {
-                    success: true,
-                    message: `Article ${article.title} created`,
-                    article: article
-                };
-                res.status(201).json(response);
+                User.findById(req.user._id).populate('followers', '-password')
+                    .then(function(user) {
+                        let recipients = [];
+
+                        for (let i = 0; i < user.followers.length; i++) {
+                            recipients.push(user.followers[i].email);
+                        }
+
+                        sendEmailTo(user.username, recipients);
+                        const response = {
+                            success: true,
+                            message: `Article ${article.title} created and it's link successfully sent to your followers`,
+                            article: article
+                        };
+                        res.status(201).json(response);
+                    })
+                    .catch(function(err) {
+                        console.log('Find User While Sending Email Error: ', err);
+                        res.status(500).json(err);
+                    });
             })
             .catch(function(err) {
                 console.log('Create Article Error: ', err);

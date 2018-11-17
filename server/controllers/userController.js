@@ -1,7 +1,6 @@
 const User = require('../models/userModel.js');
 const jwt = require('jsonwebtoken');
 const encryptPassword = require('../helpers/encryptPassword.js');
-const sendEmailTo = require('../helpers/sendEmailTo.js');
 
 class UserController {
     static register(req, res) {
@@ -63,7 +62,7 @@ class UserController {
     }
 
     static getAllUsers(req, res) {
-        User.find()
+        User.find().populate('following followers', '-password').select('-password')
             .then(function(users) {
                 res.status(200).json(users);
             })
@@ -87,7 +86,6 @@ class UserController {
                 })
                     .then(function(user) {
                         const response = {
-                            username: user.username,
                             message: `Successfully followed ${user.username}`
                         }
                         res.status(200).json(response);
@@ -117,7 +115,6 @@ class UserController {
                 })
                     .then(function(user) {
                         const response = {
-                            username: user.username,
                             message: `Successfully unfollowed ${user.username}`
                         }
                         res.status(200).json(response);
@@ -129,20 +126,6 @@ class UserController {
             })
             .catch(function(err) {
                 console.log('Unfollow User Error: ', err);
-                res.status(500).json(err);
-            });
-    }
-
-    static sendEmail(req, res) {
-        User.findById(req.user._id)
-            .then(function(user) {
-                sendEmailTo(user.username, req.body.recipients);
-                res.status(200).json({
-                    message: 'Email successfully sent',
-                });
-            })
-            .catch(function(err) {
-                console.log('Find User While Sending Email Error: ', err);
                 res.status(500).json(err);
             });
     }
