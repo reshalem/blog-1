@@ -5,6 +5,7 @@ const articleSchema = new Schema({
     title: {
         type: String,
         required: [true, 'Article title is required'],
+        unique: [true, 'Article title is already exists'],
         minlength: [2, 'Minimum required characters for article title is 2'],
         maxlength: [40, 'Maximum characters allowed for article title is 40']
     },

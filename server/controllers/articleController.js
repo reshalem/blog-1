@@ -3,39 +3,55 @@ const Comment = require('../models/commentModel.js');
 const User = require('../models/userModel.js');
 const sendEmailTo = require('../helpers/sendEmailTo.js');
 const mongoose = require('mongoose');
+const database = require('../firebaseConfig.js');
 
 class ArticleController {
     static create(req, res) {
-        let article = new Article({
-            title: req.body.title,
-            description: req.body.description,
-            author: req.user._id
-        });
-        article.save()
-            .then(function(article) {
-                User.findById(req.user._id).populate('followers', '-password')
-                    .then(function(user) {
-                        let recipients = [];
+        database.ref('clap').push({
+            articleTitle: req.body.title,
+            clapCount: 0
+        })
+            .then(response => {
+                let article = new Article({
+                    title: req.body.title,
+                    description: req.body.description,
+                    author: req.user._id,
+                    clapKey: response.key
+                });
 
-                        for (let i = 0; i < user.followers.length; i++) {
-                            recipients.push(user.followers[i].email);
-                        }
+                article.save()
+                    .then(function(article) {
+                        User.findById(req.user._id).populate('followers', '-password')
+                            .then(function(user) {
+                                if (user.followers.length > 0) {
+                                    let recipients = [];
 
-                        sendEmailTo(user.username, recipients);
-                        const response = {
-                            success: true,
-                            message: `Article ${article.title} created and it's link successfully sent to your followers`,
-                            article: article
-                        };
-                        res.status(201).json(response);
+                                    for (let i = 0; i < user.followers.length; i++) {
+                                        recipients.push(user.followers[i].email);
+                                    }
+
+                                    sendEmailTo(user.username, recipients);
+                                }
+                                
+                                const response = {
+                                    success: true,
+                                    message: `Article ${article.title} created`,
+                                    article: article
+                                };
+                                res.status(201).json(response);
+                            })
+                            .catch(function(err) {
+                                console.log('Find User While Sending Email Error: ', err);
+                                res.status(500).json(err);
+                            });
                     })
                     .catch(function(err) {
-                        console.log('Find User While Sending Email Error: ', err);
+                        console.log('Create Article Error: ', err);
                         res.status(500).json(err);
                     });
             })
             .catch(function(err) {
-                console.log('Create Article Error: ', err);
+                console.log('Push Clapkey To Firebase Error: ', err);
                 res.status(500).json(err);
             });
     }
