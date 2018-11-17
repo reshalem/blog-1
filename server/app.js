@@ -12,6 +12,12 @@ const commentRouter = require('./routes/commentRouter.js');
 
 mongoose.connect('mongodb://localhost/blogate', {useNewUrlParser: true});
 
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection Error:'));
+db.once('open', function() {
+    console.log('Connected to MongoDB');
+});
+
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());

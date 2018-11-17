@@ -1,6 +1,7 @@
 const User = require('../models/userModel.js');
 const jwt = require('jsonwebtoken');
 const encryptPassword = require('../helpers/encryptPassword.js');
+const sendEmailTo = require('../helpers/sendEmailTo.js');
 
 class UserController {
     static register(req, res) {
@@ -128,6 +129,20 @@ class UserController {
             })
             .catch(function(err) {
                 console.log('Unfollow User Error: ', err);
+                res.status(500).json(err);
+            });
+    }
+
+    static sendEmail(req, res) {
+        User.findById(req.user._id)
+            .then(function(user) {
+                sendEmailTo(user.username, req.body.recipients);
+                res.status(200).json({
+                    message: 'Email successfully sent',
+                });
+            })
+            .catch(function(err) {
+                console.log('Find User While Sending Email Error: ', err);
                 res.status(500).json(err);
             });
     }
