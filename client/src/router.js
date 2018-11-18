@@ -1,32 +1,65 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import CurrentVideo from './components/CurrentVideo.vue'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-      children: [{
-        path: '/about/:id',
-        name: 'id',
-        component: CurrentVideo,
-        props: true
-      }]
-    }
-  ]
+    mode: 'history',
+    base: process.env.BASE_URL,
+    linkActiveClass: "link_active",
+    linkExactActiveClass: "myLink",
+    routes: [
+        {
+            path: '/',
+            name: 'login',
+            component: () => import('./views/Login.vue')
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('./views/Register.vue')
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('./views/Profile.vue')
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: () => import('./views/About.vue'),
+            children: [{
+                path: '/about/:id',
+                name: 'currentVideo',
+                component: () => import('./components/CurrentVideo.vue'),
+                props: true
+            }]
+        },
+        {
+            path: '/articles',
+            name: 'articles',
+            component: () => import('./views/Article.vue'),
+            children: [{
+                path: '/articles/:id',
+                name: 'currentArticle',
+                component: () => import('./components/OneArticle.vue'),
+                props: true
+            },
+            {
+                path: '/',
+                name: 'allarticles',
+                component: () => import('./components/AllArticles.vue'),
+            }]
+        },
+        {
+            path: '/featured',
+            name: 'featured', 
+            component: () => import('./views/Featured.vue')
+        },
+        {
+            path: '/**',
+            name: 'notfound', 
+            component: () => import('./views/NotFound.vue')
+        }
+    ]
 })

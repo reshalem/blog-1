@@ -30,9 +30,9 @@ class ArticleController {
                                         recipients.push(user.followers[i].email);
                                     }
 
-                                    sendEmailTo(user.username, recipients);
+                                    sendEmailTo(user.username, recipients, article._id);
                                 }
-                                
+
                                 const response = {
                                     success: true,
                                     message: `Article ${article.title} created`,
@@ -130,18 +130,26 @@ class ArticleController {
     }
 
     static delete(req, res) {
-        Article.deleteOne({_id: req.params.id, author: req.user._id})
-            .then(function(result) {
-                Comment.deleteMany({article: req.params.id})
-                    .then(function(resultComment) {                        
-                        const response = {
-                            success: true,
-                            message: `Article successfully deleted`
-                        };
-                        res.status(200).json(response);
+        Article.findOne({_id: req.params.id, author: req.user._id})
+            .then(function(article) {
+                article.remove()
+                    .then(function(removeResult) {
+                        Comment.deleteMany({article: req.params.id})
+                            .then(function(resultComment) {  
+                                database.ref('clap/' + article.clapKey).set({});                     
+                                const response = {
+                                    success: true,
+                                    message: `Article successfully deleted`
+                                };
+                                res.status(200).json(response);
+                            })
+                            .catch(function(err) {
+                                console.log('Delete All Comments While Deleting Article Error: ', err);
+                                res.status(500).json(err);
+                            });
                     })
                     .catch(function(err) {
-                        console.log('Delete All Comments While Deleting Article Error: ', err);
+                        console.log('Remove Article Error: ', err);
                         res.status(500).json(err);
                     });
             })

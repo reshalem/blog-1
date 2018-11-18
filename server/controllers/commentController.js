@@ -17,7 +17,7 @@ class CommentController {
     }
 
     static getAll(req, res) {
-        Comment.find({article: req.params.id}).populate('user', '_id name email')
+        Comment.find({article: req.params.id}).populate('user', '_id username email')
             .then(function(comments) {
                 res.status(200).json(comments);
             })

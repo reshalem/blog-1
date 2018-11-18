@@ -7,7 +7,8 @@ class UserController {
         let user = new User({
             username: req.body.username,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            avatarURL: req.body.avatarURL
         });
         user.save()
             .then(function(user) {
@@ -51,7 +52,7 @@ class UserController {
     }
 
     static getProfile(req, res) {
-        User.findById(req.user._id)
+        User.findById(req.user._id).populate('following followers', '-password').select('-password')
             .then(function(user) {
                 res.status(200).json(user);
             })
@@ -62,7 +63,12 @@ class UserController {
     }
 
     static getAllUsers(req, res) {
-        User.find().populate('following followers', '-password').select('-password')
+        User.find({
+            _id: {
+                $nin: req.user.following,
+                $ne: req.user._id
+            }
+        }).populate('following followers', '-password').select('-password')
             .then(function(users) {
                 res.status(200).json(users);
             })

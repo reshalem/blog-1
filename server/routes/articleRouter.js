@@ -9,7 +9,7 @@ articleRouter.get('/search/:keyword', ArticleController.searchArticle);
 articleRouter.get('/', ArticleController.getAll);
 articleRouter.post('/', isLogin, ArticleController.create);
 articleRouter.put('/:id', isLogin, isAuthorizedAuthor, ArticleController.update);
-articleRouter.put('/addCount/:id', ArticleController.incrementCount);
+articleRouter.patch('/addCount/:id', isLogin, ArticleController.incrementCount);
 articleRouter.delete('/:id', isLogin, isAuthorizedAuthor, ArticleController.delete);
 
 module.exports = articleRouter;

@@ -66,7 +66,7 @@ export default {
     methods: {
         getVideos: function() {
           let params = {
-            'maxResults': '25',
+            'maxResults': '5',
             'part': 'snippet',
             'q': 'barcelona beat real madrid',
             'type': 'video',
@@ -82,7 +82,7 @@ export default {
         },
         searchVideo: function() {
           let params = {
-            'maxResults': '25',
+            'maxResults': '5',
             'part': 'snippet',
             'q': this.keyword,
             'type': 'video',

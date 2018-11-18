@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-function sendEmailTo(sender, recipients) {
+function sendEmailTo(sender, recipients, articleId) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -12,26 +12,26 @@ function sendEmailTo(sender, recipients) {
     let mailOptions = {
         from: `"Blogate" <${process.env.COMPANY_EMAIL}>`,
         to: recipients,
-        subject: 'Test email sent from nodemailer',
+        subject: `Newest Article From ${sender}`,
         html: `
             <h2>
-                Hi bro, this is an email sent with nodemailer. Sorry for the inconvenience. Cheers and have a good day!
+                Hi, We're sending you this email to notify you about the newest article posted by user ${sender} whom you've followed.
             </h2>
             <p>
-                For dear followers of user ${sender},
+                For dear followers of ${sender},
             </p>
             <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias neque consequuntur nobis officia perspiciatis maxime quae eius rerum iure voluptate, commodi veniam temporibus possimus minus illo error dignissimos reprehenderit asperiores quod ducimus perferendis? Delectus fugiat, nam at sint illo commodi a est quaerat! Odio quas exercitationem beatae eos totam doloribus.
+                Below is the direct link to see what the new article is all about. You really don't want to be late to read what your favorite writers have got for you.
             </p>    
             <p>
-                <a href="https://blogv4-b1e95.firebaseapp.com/articles/5bcda379ddde9b0e0553fb84" target="blank">
-                    Check out this new article from Mr.X!
+                <a href="http://localhost:8080/articles/${articleId}" target="blank">
+                    Quickly check this out!
                 </a>
             </p>
             <p>Thank you for your patience!</p>
             <hr>
             <p>
-                Should you have any query, don't hesitate to contact us at this email address.
+                Should you have any queries, please don't hesitate to contact us at this email address.
             </p>
             <p>Best Regards, </p><br />
             <p>Blogate Team</p>
