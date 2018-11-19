@@ -108,6 +108,61 @@ describe('User Register API Test', function() {
             .end(function(err, res) {
                 expect(res).to.have.status(500);
                 expect(res.body).to.have.property('message').to.equal("User validation failed: password: Maximum characters allowed for password is 10");
+                user.password = 'sugita'
+                done();
+            });
+    });
+});
+
+// USER REGISTER CHECK UNIQUE
+describe('User Register Unique Test', function() {
+    before(function(done) {
+        User.create({
+            username: 'sugita',
+            email: 'sugita@mail.com',
+            password: 'sugita'
+        })
+            .then(function(result) {
+                console.log('[Before][Register][Unique] User Delete Tester Result: ', result);
+                done();
+            })
+            .catch(function(err) {
+                console.log('[Before][Register][Unique] User Delete Tester Error: ', err);
+            });
+    });
+
+    after(function(done) {
+        User.deleteOne({email: 'sugita@mail.com'})
+            .then(function(result) {
+                console.log('[After][Register][Unique] User Delete Tester Result: ', result);
+                done();
+            })
+            .catch(function(err) {
+                console.log('[After][Register][Unique] User Delete Tester Error: ', err);
+            });
+    });
+
+    it('should return status 500 if other users register with the same username', function(done) {
+        user.email = 'sugita2@mail.com';
+        chai.request(app)
+            .post('/register')
+            .send(user)
+            .end(function(err, res) {
+                expect(res).to.have.status(500);
+                expect(res.body).to.have.property('errmsg').to.equal("E11000 duplicate key error collection: test-blogate.users index: username_1 dup key: { : \"sugita\" }");
+                done();
+            });
+    });
+
+    it('should return status 500 if other users register with the same email', function(done) {
+        user.email = 'sugita@mail.com';
+        user.username = 'sugita2'
+        chai.request(app)
+            .post('/register')
+            .send(user)
+            .end(function(err, res) {
+                expect(res).to.have.status(500);
+                expect(res.body).to.have.property('errmsg').to.equal("E11000 duplicate key error collection: test-blogate.users index: email_1 dup key: { : \"sugita@mail.com\" }");
                 done();
             });
     });

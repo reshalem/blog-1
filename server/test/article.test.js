@@ -85,6 +85,21 @@ describe('Article CRUD API Test', function() {
             });
     });
 
+    it('[Create Article] should return status 500 and an error message if another article is created with the same title', function(done) {
+        chai.request(app)
+            .post('/articles')
+            .set('access-token', token)
+            .send({
+                title: 'hehe',
+                description: 'hoho'
+            })
+            .end(function(err, res) {
+                expect(res).to.have.status(500);
+                expect(res.body).to.have.property('errmsg').to.equal("E11000 duplicate key error collection: test-blogate.articles index: title_1 dup key: { : \"hehe\" }");
+                done();
+            });
+    });
+
     it('[Create Article] should return status 400 and an error message if user is not logged in', function(done) {
         chai.request(app)
             .post('/articles')
@@ -241,6 +256,23 @@ describe('Article CRUD API Test', function() {
             });
     });
 
+    it('[Update Article] should return status 400 and an error message if user is not logged in', function(done) {
+        let updatedData = {
+            title: 'hihi',
+            description: 'hihi hihi hihi'
+        };
+
+        chai.request(app)
+            .put(`/articles/${article._id}`)
+            .set({})
+            .send(updatedData)
+            .end(function(err, res) {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property('message').to.equal("Token not found");
+                done();
+            });
+    });
+
 
     // DELETE AN ARTICLE
     it('[Delete Article] should return status 200 and a success message when delete is succeeded', function(done) {
@@ -262,6 +294,17 @@ describe('Article CRUD API Test', function() {
             .end(function(err, res) {
                 expect(res).to.have.status(500);
                 expect(res.body).to.have.property('message').to.equal('Cast to ObjectId failed for value "5b" at path "_id" for model "Article"');
+                done();
+            });
+    });
+
+    it('[Update Article] should return status 400 and an error message if user is not logged in', function(done) {
+        chai.request(app)
+            .delete(`/articles/${article._id}`)
+            .set({})
+            .end(function(err, res) {
+                expect(res).to.have.status(400);
+                expect(res.body).to.have.property('message').to.equal("Token not found");
                 done();
             });
     });

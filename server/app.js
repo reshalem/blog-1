@@ -10,7 +10,7 @@ const userRouter = require('./routes/userRouter.js');
 const articleRouter = require('./routes/articleRouter.js');
 const commentRouter = require('./routes/commentRouter.js');
 
-mongoose.connect('mongodb://localhost/blogate', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/test-blogate', {useNewUrlParser: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection Error:'));

@@ -17,7 +17,6 @@ const articleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    imgURL: String,
     clapKey: String,
     viewCount: {
         type: Number,
