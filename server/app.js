@@ -10,18 +10,18 @@ const userRouter = require('./routes/userRouter.js');
 const articleRouter = require('./routes/articleRouter.js');
 const commentRouter = require('./routes/commentRouter.js');
 
-mongoose.connect('mongodb://localhost/test-blogate', {useNewUrlParser: true});
+// mongoose.connect('mongodb://localhost/blogate', {useNewUrlParser: true});
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Connection Error:'));
-db.once('open', function() {
-    console.log('Connected to MongoDB');
-});
-
-// var mongodbUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASSWORD}@ds145355.mlab.com:45355/blogate`;
-// mongoose.connect(mongodbUri, {
-//     useNewUrlParser: true
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'Connection Error:'));
+// db.once('open', function() {
+//     console.log('Connected to MongoDB');
 // });
+
+var mongodbUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASSWORD}@ds145355.mlab.com:45355/blogate`;
+mongoose.connect(mongodbUri, {
+    useNewUrlParser: true
+});
 
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
