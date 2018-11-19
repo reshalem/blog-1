@@ -18,14 +18,14 @@ db.once('open', function() {
     console.log('Connected to MongoDB');
 });
 
-app.use(cors());
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
-
-// var mongodbUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASSWORD}@ds137763.mlab.com:37763/blog`;
+// var mongodbUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASSWORD}@ds145355.mlab.com:45355/blogate`;
 // mongoose.connect(mongodbUri, {
 //     useNewUrlParser: true
 // });
+
+app.use(cors());
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 app.use('/', indexRouter);
 app.use('/users', userRouter);

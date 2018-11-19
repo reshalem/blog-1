@@ -1,8 +1,8 @@
 <template>
     <div class="position-relative" id="one-wrapper">
-        <div class="position-fixed d-flex align-items-center" id="drum-btn" @click="clap">
-            <i class="fas fa-drum mr-4"></i>
-            {{ clapCount }}
+        <div class="position-fixed d-flex align-items-center justify-content-center rounded" id="drum-btn" @click="clap">
+            <i class="fas fa-drum mr-2" title="ba dum tss"></i>
+            <div class="lead" id="clapcount">{{ clapCount }}</div>
         </div>
         <div class="d-flex justify-content-start mb-2">
             <button class="btn btn-link" @click="backToAll"><i class="fas fa-undo-alt"></i> Back</button>
@@ -41,20 +41,20 @@
                 <div class="text-right mr-5" @click="showCommentForm" style="cursor:pointer">Toggle comments</div>
             </div>
         </div>
-        <div class="card mb-5" v-if="commentForm">
+        <div class="card mb-3" v-if="commentForm">
             <div class="h3 text-left ml-4 mt-4 mb-3" id="comment-section-h">Comment Section</div>
             <div class="card-body">
                 <textarea type="text" class="form-control mb-3" placeholder="Add Comment" v-model="commentContent"></textarea>
                 <div class="d-flex justify-content-end mb-4">
                     <input @click="addComment" type="submit" class="btn btn-block btn-primary font-weight-bold" value="Submit">
                 </div>
-                <div class="d-flex flex-column">
-                    <div v-for="comment in comments" class="d-flex justify-content-between container mb-3 border border-bottom py-3">
-                        <div>From: {{comment.user.username}}</div>
-                        <div class="d-flex flex-column justify-content-end">
-                            <div class="mb-2">{{comment.content}}</div>
-                            <i class="far fa-trash-alt text-warning text-right" id="btn-edit-delete" v-if="userEmail === comment.user.email" @click="deleteComment(comment._id)"></i>
-                        </div>
+                <div v-for="comment in comments" class="d-flex justify-content-between container mb-3 border py-3 px-4">
+                    <div class="d-flex flex-column align-items-start justify-content-center">
+                        <div class="mb-2">{{comment.content}}</div>
+                        <div class="font-weight-bold">{{comment.user.username}}</div>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center">
+                        <i class="far fa-trash-alt text-warning text-right" id="btn-edit-delete" v-if="userEmail === comment.user.email" @click="deleteComment(comment._id)"></i>
                     </div>
                 </div>
             </div>
@@ -65,10 +65,10 @@
 </template>
 
 <script>
-import EditModal from '@/components/EditModal.vue'
-import RelatedVideos from '@/components/RelatedVideos.vue'
-import config from '@/config.js'
-import database from '../assets/fireconfig'
+import EditModal from '@/components/EditModal.vue';
+import RelatedVideos from '@/components/RelatedVideos.vue';
+import config from '@/config.js';
+import database from '../assets/fireconfig';
 
 export default {
     name: 'OneArticle',
@@ -95,7 +95,6 @@ export default {
             })
                 .then((article) => {
                     this.article = article.data
-                    console.log('article', this.article.clapKey)
                     
                     let self = this;
                     let refClap = database.ref('clap/' + this.article.clapKey + '/clapCount');
@@ -104,7 +103,7 @@ export default {
                     });
                 })
                 .catch((err) => {
-                    console.log(err)
+                    console.log('Get One Article Error: ', err)
                 });
         },
         getComments: function() {
@@ -116,13 +115,12 @@ export default {
                 }
             })
                 .then((comments) => {
-                    this.comments = comments.data
-                    console.log(comments)
-                    this.commentBadge = this.comments.length
+                    this.comments = comments.data.reverse();
+                    this.commentBadge = this.comments.length;
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
+                    console.log('Get Article Comments Error: ', err);
+                });
         },
         addComment: function() {
             axios({
@@ -136,12 +134,12 @@ export default {
                 }
             })
                 .then((result) => {
-                    this.commentContent = ''
-                    this.getComments()
+                    this.commentContent = '';
+                    this.getComments();
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
+                    console.log('Add Comment Error: ', err);
+                });
         },
         deleteComment: function(commentId) {
             axios({
@@ -158,18 +156,18 @@ export default {
                     this.getComments();
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
+                    console.log('Delete Comment Error: ', err);
+                });
         },
         showCommentForm: function() {
             if (this.commentForm === true) {
-                this.commentForm = false
+                this.commentForm = false;
             } else {
-                this.commentForm = true
+                this.commentForm = true;
             }
         },
         backToAll: function() {
-            this.$router.push('/articles')
+            this.$router.push('/articles');
         },
         deleteArticle: function(articleId) {
             axios({
@@ -180,12 +178,12 @@ export default {
                 }
             })
                 .then((result) => {
-                    this.getarticles()
-                    this.backToAll()
+                    this.getarticles();
+                    this.backToAll();
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
+                    console.log('Delete Article Error: ', err);
+                });
         },
         clap: function() {
             let refClap = database.ref('clap/' + this.article.clapKey + '/clapCount');
@@ -194,32 +192,36 @@ export default {
                 let newCount = count + 1;
 
                 refClap.set(newCount);
-            })
+            });
         }
     },
     created() {
-        this.getOneArticle()
-        this.getComments()
-        this.checktoken()
+        this.getOneArticle();
+        this.getComments();
+        this.checktoken();
     },
     watch: {
         id(val) {
-            this.articleId = val
+            this.articleId = val;
 
             axios({
                 method: 'GET',
                 url: `${config.port}/articles/${this.articleId}`
             })
                 .then((article) => {
-                    this.article = article.data
+                    this.article = article.data;
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
-            this.getComments()
+                    console.log('Get One Article Watch Error: ', err);
+                });
+
+            this.getComments();
         },
         article() {
             this.commentForm = true;
+        },
+        $route() {
+            this.getOneArticle();
         }
     }
 }
@@ -231,16 +233,21 @@ export default {
 }
 
 #drum-btn {
-    top: 50%;
-    left: 10%;
+    top: 90%;
+    left: 5%;
     transform: translateY(-50%);    
-    width: 90px;
-    height: 90px;
-    font-size: 40px;
+    width: 80px;
+    height: 50px;
+    font-size: 30px;
 }
 
 #drum-btn i {
     cursor: pointer;
+}
+
+#clapcount {
+    font-family: 'Titillium Web', serif !important;
+    font-size: 25px;
 }
 
 #btn-edit-delete {

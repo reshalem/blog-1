@@ -11,7 +11,9 @@
                             <p class="mb-0">Email: {{user.email}}</p>
                         </div>
                     </div>
-                    <div class="card mb-5">
+
+                    <!-- Article List -->
+                    <div class="card mb-3">
                         <div class="card-header">Your Article List</div>
                         <div class="card-body">
                             <div class="d-flex flex-column justify-content-start">
@@ -20,6 +22,29 @@
                                         <router-link :to="{ name: 'id', params: { id: article._id }}">{{ article.title }}</router-link>
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Following -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="font-weight-light mb-5">Following</h5>
+                            <div class="d-flex py-2 px-3 justify-content-between align-items-center" v-for="user in following">
+                                <span class="font-weight-bold">{{ user.username }} </span> 
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button class="btn text-white" id="btn-unfollow" @click="unfollow(user._id)">Unfollow</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Followers -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="font-weight-light mb-5">Followers</h5>
+                            <div class="d-flex py-2 px-3 justify-content-between align-items-center" v-for="user in followers">
+                                <span class="font-weight-bold">{{ user.username }} </span> 
                             </div>
                         </div>
                     </div>
@@ -44,22 +69,6 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5">
-            <div class="card-body">
-                <h5 class="font-weight-light mb-3">Following</h5>
-                <div class="d-flex mb-3 justify-content-between" v-for="user in following">
-                    <span class="font-weight-bold">{{ user.username }} </span> 
-                </div>
-            </div>
-        </div>
-        <div class="card mb-5">
-            <div class="card-body">
-                <h5 class="font-weight-light mb-3">Followers</h5>
-                <div class="d-flex mb-3 justify-content-between" v-for="user in followers">
-                    <span class="font-weight-bold">{{ user.username }} </span> 
                 </div>
             </div>
         </div>
@@ -116,6 +125,21 @@ export default {
                 .catch((err) => {
                     console.log('Get User Articles Error: ', err);
                 });
+        },
+        unfollow: function(userId) {
+            axios({
+                method: 'PATCH',
+                url: `${config.port}/users/unfollow/${userId}`,
+                headers: {
+                    'access-token': localStorage.getItem('token')
+                }
+            })
+                .then((result) => {
+                    this.getUserProfile();
+                })
+                .catch((err) => {
+                    console.log('Unfollow User Error: ', err);
+                });
         }
     },
     created() {
@@ -129,5 +153,8 @@ export default {
 </script>
 
 <style>
-
+#btn-unfollow {
+    background-color: #ff7f50;
+    border: none;
+}
 </style>

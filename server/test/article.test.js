@@ -61,7 +61,7 @@ describe('Article CRUD API Test', function() {
 
 
     // CREATE AN ARTICLE
-    it('should return status 201, success message, and the article data', function(done) {
+    it('[Create Article] should return status 201, success message, and the article data', function(done) {
         chai.request(app)
             .post('/articles')
             .set('access-token', token)
@@ -85,7 +85,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 400 and an error message if user is not logged in', function(done) {
+    it('[Create Article] should return status 400 and an error message if user is not logged in', function(done) {
         chai.request(app)
             .post('/articles')
             .set({})
@@ -100,7 +100,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 500 and an error message if title length is less than 2', function(done) {
+    it('[Create Article] should return status 500 and an error message if title length is less than 2', function(done) {
         chai.request(app)
             .post('/articles')
             .set('access-token', token)
@@ -115,7 +115,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 500 and an error message if title length is larger than 40', function(done) {
+    it('[Create Article] should return status 500 and an error message if title length is larger than 40', function(done) {
         chai.request(app)
             .post('/articles')
             .set('access-token', token)
@@ -130,7 +130,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 500 and an error message if title is an empty string', function(done) {
+    it('[Create Article] should return status 500 and an error message if title is an empty string', function(done) {
         chai.request(app)
             .post('/articles')
             .set('access-token', token)
@@ -145,7 +145,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 500 and an error message if description is an empty string', function(done) {
+    it('[Create Article] should return status 500 and an error message if description is an empty string', function(done) {
         chai.request(app)
             .post('/articles')
             .set('access-token', token)
@@ -162,7 +162,7 @@ describe('Article CRUD API Test', function() {
 
 
     // GET ALL ARTICLES DATA
-    it('should return status 200 and all articles data', function(done) {
+    it('[Get All Articles] should return status 200 and all articles data', function(done) {
         chai.request(app)
             .get('/articles')
             .end(function(err, res) {
@@ -179,7 +179,7 @@ describe('Article CRUD API Test', function() {
 
 
     // GET ARTICLE DATA BY ID
-    it('should return status 200 and the particular article data (if id is valid)', function(done) {
+    it('[Get Article By Id] should return status 200 and the particular article data (if id is valid)', function(done) {
         chai.request(app)
             .get(`/articles/${article._id}`)
             .end(function(err, res) {
@@ -194,7 +194,7 @@ describe('Article CRUD API Test', function() {
             });
     });
 
-    it('should return status 500 and an error message (if id is invalid)', function(done) {
+    it('[Get Article By Id] should return status 500 and an error message (if id is invalid)', function(done) {
         chai.request(app)
             .get('/articles/5b')
             .end(function(err, res) {
@@ -206,7 +206,7 @@ describe('Article CRUD API Test', function() {
     
 
     // UPDATE AN ARTICLE
-    it('should return status 200 and a success message when update is succeeded', function(done) {
+    it('[Update Article] should return status 200 and a success message when update is succeeded', function(done) {
         let updatedData = {
             title: 'hihi',
             description: 'hihi hihi hihi'
@@ -224,9 +224,26 @@ describe('Article CRUD API Test', function() {
             });
     });
 
+    it('[Update Article] should return status 500 and an error message (if id is invalid)', function(done) {
+        let updatedData = {
+            title: 'hihi',
+            description: 'hihi hihi hihi'
+        };
+
+        chai.request(app)
+            .put('/articles/5b')
+            .set('access-token', token)
+            .send(updatedData)
+            .end(function(err, res) {
+                expect(res).to.have.status(500);
+                expect(res.body).to.have.property('message').to.equal('Cast to ObjectId failed for value "5b" at path "_id" for model "Article"');
+                done();
+            });
+    });
+
 
     // DELETE AN ARTICLE
-    it('should return status 200 and a success message when delete is succeeded', function(done) {
+    it('[Delete Article] should return status 200 and a success message when delete is succeeded', function(done) {
         chai.request(app)
             .delete(`/articles/${article._id}`)
             .set('access-token', token)
@@ -234,6 +251,17 @@ describe('Article CRUD API Test', function() {
                 expect(res).to.have.status(200);
                 expect(res.body).to.have.property('success').to.equal(true);
                 expect(res.body).to.have.property('message').to.equal('Article successfully deleted');
+                done();
+            });
+    });
+
+    it('[Delete Article] should return status 500 and an error message (if id is invalid)', function(done) {
+        chai.request(app)
+            .delete('/articles/5b')
+            .set('access-token', token)
+            .end(function(err, res) {
+                expect(res).to.have.status(500);
+                expect(res.body).to.have.property('message').to.equal('Cast to ObjectId failed for value "5b" at path "_id" for model "Article"');
                 done();
             });
     });

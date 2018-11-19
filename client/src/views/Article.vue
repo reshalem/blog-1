@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header">Article List</div>
+                    <div class="card-header font-weight-bold">Latest Articles</div>
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-start">
                             <ul class="navbar-nav">
@@ -25,7 +25,7 @@
                                     <router-link :to="{ name: 'currentArticle', params: { id: article._id }}">{{ article.title }}</router-link>
                                 </li>
                             </ul>
-                            <router-link class="" to="/articles">
+                            <router-link class="text-danger" to="/articles">
                                 See All Articles
                                 <i class="far fa-paper-plane ml-1"></i>
                             </router-link>
@@ -35,24 +35,17 @@
             </div>
         </div>
         <div class="col-lg-9">
-            <router-view :shouldUpdate="shouldUpdate" :isLogin="isLogin" :userEmail="userEmail" :getarticles="getArticles" :checktoken="checktoken" @update-viewcount="updatePopular"></router-view>
-        </div>
-        <div class="mt-5">
-            <PopularArticles :popularupdate="popularUpdate"></PopularArticles>
+            <router-view :shouldUpdate="shouldUpdate" :isLogin="isLogin" :userEmail="userEmail" :getarticles="getArticles" :checktoken="checktoken"></router-view>
         </div>
     </div>
 </template>
 
 <script>
 import config from '@/config.js';
-import PopularArticles from '@/components/PopularArticles.vue';
 
 export default {
     name: 'article',
     props: ['isLogin', 'userEmail', 'checktoken'],
-    components: {
-        PopularArticles
-    },
     data() {
         return {
             articles: [],
@@ -62,7 +55,6 @@ export default {
             },
             shouldUpdate: 0,
             keyword: '',
-            popularUpdate: 0,
             articleId: this.$router.history.current.params.id
         }
     },
@@ -73,7 +65,7 @@ export default {
                 url: `${config.port}/articles`
             })
                 .then((articles) => {
-                    this.articles = articles.data;
+                    this.articles = articles.data.reverse();
                 })
                 .catch((err) => {
                     console.log('Get All Articles Error: ', err);
@@ -111,16 +103,12 @@ export default {
                 })
                     .then((result) => {
                         this.getArticles();
-                        this.popularUpdate += 1;
                         this.articleId = this.$router.history.current.params.id;
                     })
                     .catch((err) => {
                         console.log('Add View Count Error: ', err);
                     });
             }
-        },  
-        updatePopular: function() {
-            this.popularUpdate += 1;
         }
     },
     created() {
@@ -129,3 +117,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.card-header {
+    background-color: #ff4b4b !important;
+    color: white;
+    border: none;
+}
+</style>

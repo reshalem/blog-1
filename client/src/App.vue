@@ -1,8 +1,8 @@
 <template>
     <div id="app">
-        <nav class="navbar navbar-expand-sm navbar-light mb-5 mt-2">
+        <nav class="navbar navbar-expand-sm navbar-light mb-5 mt-3">
             <div class="container">
-                <a id="home-nav" class="navbar-brand text-secondary">
+                <a id="home-nav" class="lead text-secondary">
                     BloGate
                 </a>
                 <div class="collapse navbar-collapse" id="div-main-nav">
@@ -10,7 +10,7 @@
                         <li class="nav-item mr-2">
                             <router-link id="nav-link-btn" to="/featured" class="nav-link">
                                 Featured
-                                <i class="fas fa-fire"></i>
+                                <i class="fas fa-fire ml-1"></i>
                             </router-link>
                         </li>
                         <li class="nav-item mr-2">
@@ -19,13 +19,13 @@
                                 <i class="fas fa-paper-plane ml-1"></i>
                             </router-link>
                         </li>
-                        <li class="nav-item dropdown mr-2" v-if="!isLogin">
+                        <li class="nav-item mr-2" v-if="!isLogin">
                             <router-link id="nav-link-btn" to="/register" class="nav-link">
                                 Register
                                 <i class="fas fa-scroll ml-1"></i>
                             </router-link>
                         </li>
-                        <li class="nav-item dropdown mr-2" v-if="!isLogin">
+                        <li class="nav-item" v-if="!isLogin">
                             <router-link id="nav-link-btn" to="/" class="nav-link">
                                 Login
                                 <i class="fas fa-user-astronaut ml-1"></i>
@@ -37,7 +37,7 @@
                                 <i class="fas fa-user-ninja ml-1"></i>
                             </router-link>
                         </li>
-                        <li class="nav-item dropdown mr-2" v-if="isLogin">
+                        <li class="nav-item" v-if="isLogin">
                             <a class="nav-link" @click="logout" style="cursor: pointer">
                                 Log Out
                                 <i class="fas fa-sign-out-alt ml-1"></i>
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </nav>
-        <div class="container">
+        <div class="container pt-1">
             <router-view :checktoken="checkToken" :isLogin="isLogin" @sendEmail="updateEmail($event)" :userEmail="userEmail"/>
         </div>
     </div>
@@ -111,7 +111,7 @@ export default {
 }
 
 #home-nav {
-    font-family: 'Roboto Slab', serif;
+    font-family: 'Titillium Web', sans-serif;
     font-size: 30px;
     cursor: pointer;
 }
@@ -148,11 +148,15 @@ export default {
     outline: 0;
 }
 
+.nav-link:hover {
+    color: #3B5998 !important;
+}
+
 @media (min-width: 34em) {
     .card-columns {
-        -webkit-column-count: 2;
-        -moz-column-count: 2;
-        column-count: 2;
+        -webkit-column-count: 1;
+        -moz-column-count: 1;
+        column-count: 1;
     }
 }
 

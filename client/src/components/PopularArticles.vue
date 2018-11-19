@@ -1,21 +1,20 @@
 <template>
-    <div class="card-columns">
-        <div v-for="article in popularArticles" class="card mb-4">
-            <div class="card-body">
-                <div v-if="isLogin && userEmail === article.author.email" class="d-flex justify-content-end align-items-center mb-4">
-                    <i class="fas fa-fingerprint text-danger mr-2" id="btn-fingerprint"></i>
-                    Your Article
+    <div class="mb-4">
+        <div class="display-4 mb-4 d-flex align-items-center justify-content-center">Most Popular Articles <i class="far fa-hand-point-down ml-4"></i></div>
+        <div class="card-columns">
+            <div v-for="article in popularArticles" class="card mb-4">
+                <div class="card-body">
+                    <div v-if="isLogin && userEmail === article.author.email" class="d-flex justify-content-end align-items-center mb-2">
+                        <i class="fas fa-fingerprint text-danger mr-2" id="btn-fingerprint"></i>
+                        Your Article
+                    </div>
+                    <h4 class="card-title mb-4">{{ article.title }}</h4>
+                    <p class="card-text text-justify px-4 mb-4">{{ article.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="font-weight-bold ml-4">By {{ article.author.username }}</div>
+                        <div class="font-weight-bold mr-4">View Count: {{ article.viewCount }}</div>
+                    </div>
                 </div>
-                <h4 class="card-title">{{ article.title }}</h4>
-                <p class="card-text">{{ article.description }}</p>
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="font-weight-bold ml-5">By {{ article.author.name }}</div>
-                    <!-- <i class="far fa-comment-alt mr-5" id="comment-symbol"></i> -->
-                    <div class="font-weight-bold mr-5">View Count: {{ article.viewCount }}</div>
-                </div>
-                <!-- <button class="btn btn-block font-weight-bold" v-if="isLogin" id="btn-post" @click="goToLink(article._id)">
-                    Read More
-                </button> -->
             </div>
         </div>
     </div>
@@ -26,7 +25,7 @@ import config from '@/config.js';
 
 export default {
     name: 'populararticles',
-    props: ['shouldUpdate', 'isLogin', 'userEmail', 'getarticles', 'popularupdate'],
+    props: ['isLogin', 'userEmail'],
     data() {
         return {
             popularArticles: []

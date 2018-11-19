@@ -25,17 +25,6 @@ export default new Router({
             component: () => import('./views/Profile.vue')
         },
         {
-            path: '/about',
-            name: 'about',
-            component: () => import('./views/About.vue'),
-            children: [{
-                path: '/about/:id',
-                name: 'currentVideo',
-                component: () => import('./components/CurrentVideo.vue'),
-                props: true
-            }]
-        },
-        {
             path: '/articles',
             name: 'articles',
             component: () => import('./views/Article.vue'),

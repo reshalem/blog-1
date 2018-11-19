@@ -1,34 +1,36 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-xl-7">
-        <div class="mt-4">
+    <div class="container-fluid border mb-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-left h3 ml-2 mt-4 mb-3" id="related-header">Related Videos</div>
+                <div class="mt-4">
+                    
+                    <!-- Video List -->
+                    <ul class="list-unstyled mx-2" v-if="!noRelatedVideos">
+                        <a class="video-link" v-for="video in videos">
+                            <li>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" :src="video.url" allowfullscreen></iframe>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="mb-3">
+                                        <div class="lead">{{ video.snippet.title }}</div>
+                                    </div>
+                                    <div class="mb-2">{{ video.snippet.description }}</div>
+                                    <div class="mb-4 font-weight-bold">{{ video.snippet.channelTitle }}</div>
+                                    <hr>
+                                </div>
+                            </li>
+                        </a>
+                    </ul>
+                    <div class="lead text-left mb-4 ml-2" v-else>
+                        There are no related videos regarding this article (title).
+                    </div>
 
-
-
-          <!-- Video List -->
-          <ul class="list-unstyled" v-if="!noRelatedVideos">
-            <a class="video-link" v-for="video in videos">
-              <li class="media my-4">
-                <img class="mr-3" :src="video.snippet.thumbnails.default.url" alt="Thumbnail">
-                <div class="media-body">
-                  <div class="mb-3">
-                    <div class="lead">{{ video.snippet.title }}</div>
-                  </div>
-                  <div class="mb-2">{{video.snippet.description}}</div>
-                  <br />
                 </div>
-              </li>
-            </a>
-          </ul>
-          <div class="lead" v-else>
-              There are no related videos regarding this article (title).
-          </div>
+            </div>
         </div>
-      </div>
-
     </div>
-  </div>
 </template>
 
 <script>
@@ -56,6 +58,10 @@ export default {
             .then((result) => {
               this.videos = result.data.items;
 
+              for (let i = 0; i < this.videos.length; i++) {
+                  this.videos[i].url = `https://youtube.com/embed/${this.videos[i].id.videoId}?rel=0`
+              }
+
               if (result.data.items.length === 0) {
                   this.noRelatedVideos = true;
               } else {
@@ -78,6 +84,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+#related-header {
+    font-family: 'Oswald', sans-serif;
+}
 </style>

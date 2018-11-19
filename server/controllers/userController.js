@@ -62,13 +62,24 @@ class UserController {
             });
     }
 
-    static getAllUsers(req, res) {
+    static getAllUsersToFollow(req, res) {
         User.find({
             _id: {
                 $nin: req.user.following,
                 $ne: req.user._id
             }
         }).populate('following followers', '-password').select('-password')
+            .then(function(users) {
+                res.status(200).json(users);
+            })
+            .catch(function(err) {
+                console.log('Get All Users To Follow Error: ', err);
+                res.status(500).json(err);
+            });
+    }
+
+    static getAllUsers(req, res) {
+        User.find().populate('following followers', '-password').select('-password')
             .then(function(users) {
                 res.status(200).json(users);
             })

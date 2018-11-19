@@ -175,7 +175,7 @@ class ArticleController {
     }
 
     static searchArticle(req, res) {
-        Article.find({name: new RegExp(req.params.keyword, 'i')})
+        Article.find({title: new RegExp(req.params.keyword, 'i')})
             .then(function(articles) {
                 res.status(200).json(articles);
             })

@@ -240,7 +240,6 @@ describe('User Get Profile Data API Test', function() {
                 expect(res.body).to.have.property('_id');
                 expect(res.body).to.have.property('username');
                 expect(res.body).to.have.property('email');
-                expect(res.body).to.have.property('password');
                 done();
             });
     });
