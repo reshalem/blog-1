@@ -45,7 +45,15 @@ export default {
 
                     this.popularArticles = [];
 
-                    for (let i = 0; i < 5; i++) {
+                    let limit;
+
+                    if (articles.data.length > 3) {
+                        limit = 3;
+                    } else {
+                        limit = articles.data.length;
+                    }
+
+                    for (let i = 0; i < limit; i++) {
                         this.popularArticles.push(arr_articles[i]);
                     }
                 })
