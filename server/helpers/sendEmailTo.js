@@ -24,7 +24,7 @@ function sendEmailTo(sender, recipients, articleId) {
                 Below is the direct link to see what the new article is all about. You really don't want to be late to read what your favorite writers have got for you.
             </p>    
             <p>
-                <a href="http://localhost:8080/articles/${articleId}" target="blank">
+                <a href="https://blo-gate.firebaseapp.com/articles/${articleId}" target="blank">
                     Quickly check this out!
                 </a>
             </p>
