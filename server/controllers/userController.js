@@ -35,8 +35,7 @@ class UserController {
                 if (user) {
                     const token = jwt.sign({id: user._id, username: user.username, email: user.email}, process.env.JWT_KEY);
                     res.status(201).json({
-                        token: token,
-                        role: user.role
+                        token: token
                     });
                 } else {
                     const err = {

@@ -19,7 +19,7 @@
                             <div class="d-flex flex-column justify-content-start">
                                 <ul class="navbar-nav">
                                     <li class="nav-item mb-3" v-for="article in articles">
-                                        <router-link :to="{ name: 'id', params: { id: article._id }}">{{ article.title }}</router-link>
+                                        <router-link :to="{ name: 'currentArticle', params: { id: article._id }}">{{ article.title }}</router-link>
                                     </li>
                                 </ul>
                             </div>

@@ -154,14 +154,14 @@ class ArticleController {
                     });
             })
             .catch(function(err) {
-                console.log('Delete Article Error: ', err);
+                console.log('Find Article While Deleting Error: ', err);
                 res.status(500).json(err);
             });
     }
 
     static findByAuthor(req, res) {
         const userId = new mongoose.Types.ObjectId(req.user._id)
-        Article.find().populate('author')
+        Article.find().populate('author', '-password')
             .then(function(articles) {
                 const result = articles.filter(function(datum) {
                     return userId.equals(datum.author._id);
@@ -180,6 +180,7 @@ class ArticleController {
                 res.status(200).json(articles);
             })
             .catch(function(err) {
+                console.log('Search Articles Error: ', err);
                 res.status(500).json(err.message); 
             });
     }
